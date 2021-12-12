@@ -1,7 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const {Model} = require('sequelize');
+const bcrypt = require("bcrypt");
+const {serverErrorResponse} = require("../helpers/response");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-  };
+  }
+
   User.init({
     full_name: DataTypes.STRING,
     email: DataTypes.STRING,
@@ -24,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    instanceMethods: {
+      validPassword: (password) => {
+        return bcrypt.compareSync(password, this.password);
+      }
+    }
   });
   return User;
 };
