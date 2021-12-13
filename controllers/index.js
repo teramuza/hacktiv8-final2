@@ -1,5 +1,8 @@
-const {register} = require('./users');
+const express = require('express');
+const router = express.Router();
+const userRoute = require('./users');
+const verifyToken = require('../middleware/verifyToken');
 
-module.exports = {
-    register
-}
+router.use('/users', userRoute);
+
+module.exports = router;

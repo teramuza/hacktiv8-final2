@@ -1,4 +1,8 @@
+const express = require('express');
 const bcrypt = require('bcrypt');
+const {ValidationError} = require('sequelize');
+
+const router = express.Router();
 const responseUtil = require('../helpers/response');
 const { User } = require('../models');
 
@@ -13,14 +17,22 @@ const register = async (req, res) => {
             age,
             phone_number
         } = req.body;
-        await bcrypt.hash(password, 10, async (err, encrypt) => {
-            await User.create({full_name, email, username, password: encrypt, profile_image_url, age, phone_number});
-            return responseUtil.successResponse(res, {}, `Hi ${full_name}, your account was created successfully`);
+        await bcrypt.hash(password, 10, (err, encrypt) => {
+            User.create({full_name, email, username, password: encrypt, profile_image_url, age, phone_number})
+                .then(() => responseUtil.successResponse(res, `Hi ${full_name}, your account was created successfully`))
+                .catch((e) => {
+                    if (e instanceof ValidationError)
+                        return responseUtil.validationErrorResponse(res, e.errors[0].message)
+                    else {
+                        return responseUtil.badRequestResponse(res, e);
+                    }
+                });
         })
     } catch (e) {
-        console.log(e);
-        return responseUtil.badRequestResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, e.message);
     }
 }
 
-module.exports = {register};
+router.post('/register', register);
+
+module.exports = router;

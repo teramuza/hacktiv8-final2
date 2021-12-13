@@ -1,4 +1,4 @@
-const successResponse = (res, data, message) => {
+const successResponse = (res, message, data) => {
     return res.status(200).json({
         status: 'success',
         message,
@@ -20,17 +20,23 @@ const forbiddenResponse = (res, message) => {
     })
 }
 
-const badRequestResponse = (res, message, data) => {
+const badRequestResponse = (res, data) => {
     return res.status(400).json({
         status: 'bad request',
-        message,
         data
     })
 }
 
-const serverErrorResponse = (res, message) => {
+const serverErrorResponse = (res, data) => {
     return res.status(503).json({
         status: 'server error',
+        data
+    })
+}
+
+const validationErrorResponse = (res, message) => {
+    return res.status(400).json({
+        status: 'validation error',
         message
     })
 }
@@ -40,5 +46,6 @@ module.exports = {
     unauthorizedResponse,
     forbiddenResponse,
     badRequestResponse,
-    serverErrorResponse
+    serverErrorResponse,
+    validationErrorResponse
 }
