@@ -19,7 +19,12 @@ const register = async (req, res) => {
         } = req.body;
         await bcrypt.hash(password, 10, (err, encrypt) => {
             User.create({full_name, email, username, password: encrypt, profile_image_url, age, phone_number})
-                .then(() => responseUtil.successResponse(res, `Hi ${full_name}, your account was created successfully`))
+                .then(() => responseUtil.successResponse(
+                        res,
+                        `Hi ${full_name}, your account was created successfully`,
+                        {user: {email, full_name, username, profile_image_url, age, phone_number}},
+                        201
+                    ))
                 .catch((e) => {
                     if (e instanceof ValidationError)
                         return responseUtil.validationErrorResponse(res, e.errors[0].message)
