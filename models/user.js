@@ -1,6 +1,5 @@
 'use strict';
 const {Model} = require('sequelize');
-const { SocialMedia } = require('.');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -101,7 +100,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
-  User.hasOne(SocialMedia, {foreignKey: 'user_id', foreignKeyConstraint: true})
 
   return User;
 };

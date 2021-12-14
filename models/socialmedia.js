@@ -14,8 +14,27 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   SocialMedia.init({
-    name: DataTypes.STRING,
-    social_media_url: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Name required',
+        }
+      }
+    },
+    social_media_url: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Social media required'
+        },
+        isUrl: {
+          msg: 'Social media invalid'
+        }
+      }
+    },
     user_id: {
       type: DataTypes.INTEGER,
       references: 'Users',
@@ -25,5 +44,10 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'SocialMedia',
   });
+
+  SocialMedia.associate = (model) => {
+    SocialMedia.belongsTo(model.User, {foreignKey: 'user_id', foreignKeyConstraint: true})
+  }
+
   return SocialMedia;
 };
