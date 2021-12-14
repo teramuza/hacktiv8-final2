@@ -20,17 +20,17 @@ const forbiddenResponse = (res, message) => {
     })
 }
 
-const badRequestResponse = (res, data) => {
+const badRequestResponse = (res, error) => {
     return res.status(400).json({
         status: 'bad request',
-        data
+        error
     })
 }
 
-const serverErrorResponse = (res, data) => {
+const serverErrorResponse = (res, error) => {
     return res.status(503).json({
         status: 'server error',
-        data
+        error
     })
 }
 
