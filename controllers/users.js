@@ -101,8 +101,29 @@ const updateUser = (req, res) => {
     }
 }
 
+const deleteUser = (req, res) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        User.destroy({where: {id: userId}})
+            .then(result => {
+                console.log(result)
+                if (result === 0) {
+                    return responseUtil.badRequestResponse(res, {error: {message: 'Account not found'}});
+                }
+                return responseUtil.successResponse(res, 'Account has been successfully deleted');
+            })
+            .catch(err => {
+                return responseUtil.badRequestResponse(res, err);
+            })
+    } catch (e) {
+        return responseUtil.serverErrorResponse(res, e.message);
+    }
+}
+
 router.post('/register', register);
 router.post('/login', login);
-router.put('/:userId', verifyToken, updateUser)
+router.put('/:userId', verifyToken, updateUser);
+router.delete('/:userId', verifyToken, deleteUser);
+
 
 module.exports = router;
