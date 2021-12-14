@@ -5,9 +5,13 @@ require('dotenv').config();
 const {JWT_SECRET_KEY} = process.env;
 
 module.exports = async (req, res, next) => {
-    const token = req.headers.authorization;
+    let token = req.headers.authorization;
+
     if (!token)
         return response.forbiddenResponse(res, 'access token required');
+
+    if (token.includes('Bearer'))
+        token = token.replace('Bearer ', '');
 
     jwt.verify(token, JWT_SECRET_KEY, function (err, decoded) {
         if (err)
