@@ -3,7 +3,7 @@ const {ValidationError} = require('sequelize');
 
 const router = express.Router();
 const responseUtil = require('../helpers/response');
-const { SocialMedia } = require('../models');
+const { SocialMedia, User } = require('../models');
 
 const createSocialMedia = (req, res) => {
     try {
@@ -27,6 +27,32 @@ const createSocialMedia = (req, res) => {
     }
 }
 
+const getSocialMedia = (req, res) => {
+    try {
+        const {id} = req.user;
+
+        SocialMedia.findAll({
+            where: {user_id: id},
+            include: {
+                model: User,
+                as: 'User',
+                attributes: ['id', 'username', 'profile_image_url']
+            }
+        })
+            .then((data) => {
+                console.log(data);
+                return responseUtil.successResponse(res, null, data)
+            })
+            .catch(err => {
+                console.log(err);
+                return responseUtil.badRequestResponse(res, err);
+            })
+    } catch (e) {
+        return responseUtil.serverErrorResponse(res, e.message);
+    }
+}
+
 router.post('/', createSocialMedia);
+router.get('/', getSocialMedia)
 
 module.exports = router;
