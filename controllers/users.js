@@ -106,7 +106,6 @@ const deleteUser = (req, res) => {
         const userId = parseInt(req.params.userId);
         User.destroy({where: {id: userId}})
             .then(result => {
-                console.log(result)
                 if (result === 0) {
                     return responseUtil.badRequestResponse(res, {error: {message: 'Account not found'}});
                 }
@@ -124,6 +123,5 @@ router.post('/register', register);
 router.post('/login', login);
 router.put('/:userId', verifyToken, updateUser);
 router.delete('/:userId', verifyToken, deleteUser);
-
 
 module.exports = router;
