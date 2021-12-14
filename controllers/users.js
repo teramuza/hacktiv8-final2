@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const {ValidationError} = require('sequelize');
 
 const router = express.Router();
+const verifyToken = require('../middleware/verifyToken')
 const responseUtil = require('../helpers/response');
 const { User } = require('../models');
 const {JWT_SECRET_KEY} = process.env;
@@ -72,7 +73,36 @@ const login = (req, res) => {
     }
 }
 
+const updateUser = (req, res) => {
+    try {
+        const {email, full_name, username, profile_image_url, age, phone_number} = req.body;
+        const bodyData = {
+            email,
+            full_name,
+            username,
+            profile_image_url,
+            age,
+            phone_number
+        }
+        const userId = parseInt(req.params.userId);
+        if (req.user.id === userId) {
+            User.update(bodyData, {where: {id: userId}})
+                .then(() => {
+                    return responseUtil.successResponse(res, 'update data successfully', bodyData);
+                })
+                .catch(err => {
+                    return responseUtil.badRequestResponse(res, err);
+                })
+        } else {
+            return responseUtil.badRequestResponse(res, {error: {message: 'you can only update your own data'}})
+        }
+    } catch (e) {
+        return responseUtil.serverErrorResponse(res, e.message);
+    }
+}
+
 router.post('/register', register);
 router.post('/login', login);
+router.put('/:userId', verifyToken, updateUser)
 
 module.exports = router;
