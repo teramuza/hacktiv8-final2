@@ -40,17 +40,17 @@ const getSocialMedia = (req, res) => {
             }
         })
             .then((data) => {
-                console.log(data);
                 return responseUtil.successResponse(res, null, data)
             })
             .catch(err => {
-                console.log(err);
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
         return responseUtil.serverErrorResponse(res, e.message);
     }
 }
+
+
 
 router.post('/', createSocialMedia);
 router.get('/', getSocialMedia)
