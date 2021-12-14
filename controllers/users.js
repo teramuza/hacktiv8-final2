@@ -66,7 +66,7 @@ const login = (req, res) => {
                     return responseUtil.unauthorizedResponse(res, 'email is not registered')
                 })
         } else {
-            return responseUtil.badRequestResponse(res, {error: {message: 'email & password required'}})
+            return responseUtil.badRequestResponse(res, {message: 'email & password required'})
         }
     } catch (e) {
         return responseUtil.serverErrorResponse(res, e.message);
@@ -94,7 +94,7 @@ const updateUser = (req, res) => {
                     return responseUtil.badRequestResponse(res, err);
                 })
         } else {
-            return responseUtil.badRequestResponse(res, {error: {message: 'you can only update your own data'}})
+            return responseUtil.badRequestResponse(res, {message: 'you can only update your own data'})
         }
     } catch (e) {
         return responseUtil.serverErrorResponse(res, e.message);
@@ -107,7 +107,7 @@ const deleteUser = (req, res) => {
         User.destroy({where: {id: userId}})
             .then(result => {
                 if (result === 0) {
-                    return responseUtil.badRequestResponse(res, {error: {message: 'Account not found'}});
+                    return responseUtil.badRequestResponse(res, {message: 'Account not found'});
                 }
                 return responseUtil.successResponse(res, 'Account has been successfully deleted');
             })

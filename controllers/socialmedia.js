@@ -50,9 +50,31 @@ const getSocialMedia = (req, res) => {
     }
 }
 
+const updateSocialMedia = (req, res) => {
+    try {
+        const {name, social_media_url} = req.body;
+        const bodyData = {name, social_media_url};
+        const id = parseInt(req.params.socialMediaId);
+        const userId = req.user.id;
+        SocialMedia.update(bodyData, {where: {id, user_id: userId}})
+            .then((data) => {
+                if (data[0] === 0){
+                    return responseUtil.badRequestResponse(res, {message: 'data not found'});
+                }
 
+                return responseUtil.successResponse(res, 'update data successfully', bodyData);
+            })
+            .catch(err => {
+                console.log(err);
+                return responseUtil.badRequestResponse(res, err);
+            })
+    } catch (e) {
+        return responseUtil.serverErrorResponse(res, e.message);
+    }
+}
 
 router.post('/', createSocialMedia);
 router.get('/', getSocialMedia)
+router.put('/:socialMediaId', updateSocialMedia);
 
 module.exports = router;
