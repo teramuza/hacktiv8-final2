@@ -65,7 +65,24 @@ const updateSocialMedia = (req, res) => {
                 return responseUtil.successResponse(res, 'update data successfully', bodyData);
             })
             .catch(err => {
-                console.log(err);
+                return responseUtil.badRequestResponse(res, err);
+            })
+    } catch (e) {
+        return responseUtil.serverErrorResponse(res, e.message);
+    }
+}
+
+const deleteSocialMedia = (req, res) => {
+    try {
+        const id = parseInt(req.params.socialMediaId);
+        SocialMedia.destroy({where: {id}})
+            .then(result => {
+                if (result === 0) {
+                    return responseUtil.badRequestResponse(res, {message: 'Social media not found'});
+                }
+                return responseUtil.successResponse(res, 'Your social media has been successfully deleted')
+            })
+            .catch(err => {
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
@@ -76,5 +93,6 @@ const updateSocialMedia = (req, res) => {
 router.post('/', createSocialMedia);
 router.get('/', getSocialMedia)
 router.put('/:socialMediaId', updateSocialMedia);
+router.delete('/:socialMediaId', deleteSocialMedia);
 
 module.exports = router;
