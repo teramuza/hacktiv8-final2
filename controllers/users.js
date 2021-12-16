@@ -1,5 +1,4 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {ValidationError} = require('sequelize');
 
@@ -46,8 +45,7 @@ const login = (req, res) => {
             User.findOne({where: {email}})
                 .then((user) => {
                     if (user) {
-                        const isValid = bcrypt.compareSync(password, user.password);
-                        if (isValid) {
+                        if (user.validPassword(password, user.password)) {
                             const userData = {
                                 id: user.id,
                                 email: user.email,
