@@ -97,6 +97,34 @@ const updateUser = (req, res) => {
     }
 }
 
+const updatePassword = (req, res) => {
+    try {
+        const {email, password, new_password} = req.body;
+
+        if (email && password && new_password) {
+            User.findOne({where: {email}})
+                .then((user) => {
+                    if (user) {
+                        User.update({password: new_password}, {where: {id: user.id}})
+                            .then(() => {
+                                return responseUtil.successResponse(res, 'update password successfully');
+                            })
+                            .catch(err => {
+                                return responseUtil.badRequestResponse(res, err);
+                            })
+                    } else {
+                        return responseUtil.badRequestResponse(res, {message: 'account was not found'})
+                    }
+                })
+                .catch(err => {
+                    return responseUtil.badRequestResponse(res, err);
+                })
+        }
+    } catch (e) {
+        return responseUtil.serverErrorResponse(res, e.message);
+    }
+}
+
 const deleteUser = (req, res) => {
     try {
         const userId = parseInt(req.params.userId);
@@ -118,6 +146,7 @@ const deleteUser = (req, res) => {
 router.post('/register', register);
 router.post('/login', login);
 router.put('/:userId', verifyToken, updateUser);
+router.patch('/changePassword', updatePassword);
 router.delete('/:userId', verifyToken, deleteUser);
 
 module.exports = router;

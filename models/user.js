@@ -107,8 +107,19 @@ module.exports = (sequelize, DataTypes) => {
               user.password = hash;
             })
             .catch(err => {
-              throw new Error(err);
+              throw new Error(err?.message);
             })
+      },
+      beforeUpdate(user, _) {
+        if (user.password) {
+          return bcrypt.hash(user.password, 10)
+              .then(hash => {
+                user.password = hash;
+              })
+              .catch(err => {
+                throw new Error(err?.message)
+              })
+        }
       }
     },
     instanceMethods: {
