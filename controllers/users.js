@@ -105,7 +105,7 @@ const updatePassword = (req, res) => {
             User.findOne({where: {email}})
                 .then((user) => {
                     if (user) {
-                        User.update({password: new_password}, {where: {id: user.id}})
+                        user.update({password: new_password}, {where: {id: user.id}})
                             .then(() => {
                                 return responseUtil.successResponse(res, 'update password successfully');
                             })
