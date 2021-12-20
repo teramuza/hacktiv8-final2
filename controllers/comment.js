@@ -14,7 +14,7 @@ const createComment = (req, res) => {
                 responseUtil.successResponse(
                     res,
                     `Hi your Comment added`,
-                    {photo: {id: data.id, photo_id, comment, user_id: id, updatedAt: data.updatedAt, createdAt: data.createdAt}}
+                    {comment: {id: data.id, photo_id, comment, user_id: id, updatedAt: data.updatedAt, createdAt: data.createdAt}}
                 );
             }).catch(err => {
                 if (err instanceof ValidationError)
