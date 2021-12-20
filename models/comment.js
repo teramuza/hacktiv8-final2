@@ -13,17 +13,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Comment.init({
-    user_id: { type : DataTypes.INTEGER
-    ,
-    references: 'Users',
-    referencesKey: 'id'
-  
+    user_id: {
+      type: DataTypes.INTEGER,
+      references: 'Users',
+      referencesKey: 'id'
   },
-    photo_id: {type : DataTypes.INTEGER,
+    photo_id: {
+      type: DataTypes.INTEGER,
       references: 'Photos',
       referencesKey: 'id'
     },
-    comment:{type : DataTypes.TEXT,
+    comment:{
+      type: DataTypes.TEXT,
       allowNull: false,
       validate: {
         notNull: {

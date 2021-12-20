@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Photo.init({
     title: {
-      type : DataTypes.STRING,
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       }},
     poster_image_url:{
-      type : DataTypes.TEXT,
+      type: DataTypes.TEXT,
       allowNull: false,
       validate: {
         notNull: {
@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     user_id:{
-      type : DataTypes.INTEGER,
+      type: DataTypes.INTEGER,
       references: 'Users',
       referencesKey: 'id'
     }
