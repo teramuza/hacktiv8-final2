@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-     
     }
   };
   Photo.init({
-    title: {type : DataTypes.STRING,
+    title: {
+      type : DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
@@ -22,13 +22,16 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    caption: { type: DataTypes.TEXT,  allowNull: false,
+    caption: {
+      type: DataTypes.TEXT,
+      allowNull: false,
       validate: {
         notNull: {
           msg: 'caption required',
         }
       }},
-    poster_image_url:{type : DataTypes.TEXT,
+    poster_image_url:{
+      type : DataTypes.TEXT,
       allowNull: false,
       validate: {
         notNull: {
@@ -39,7 +42,8 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    user_id:{type : DataTypes.INTEGER,
+    user_id:{
+      type : DataTypes.INTEGER,
       references: 'Users',
       referencesKey: 'id'
     }
