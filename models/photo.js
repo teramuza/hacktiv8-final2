@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'tittle required',
+          msg: 'Title required',
         }
       }
     },
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'caption required',
+          msg: 'Caption required',
         }
       }},
     poster_image_url:{
@@ -35,10 +35,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'image required'
+          msg: 'Poster image required'
         },
         isUrl: {
-          msg: 'image url invalid'
+          msg: 'Poster image url invalid'
         }
       }
     },
