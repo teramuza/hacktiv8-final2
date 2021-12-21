@@ -107,7 +107,7 @@ module.exports = (sequelize, DataTypes) => {
               user.password = hash;
             })
             .catch(err => {
-              throw new Error(err?.message);
+              throw new Error();
             })
       },
       beforeUpdate(user, _) {
@@ -117,7 +117,7 @@ module.exports = (sequelize, DataTypes) => {
                 user.password = hash;
               })
               .catch(err => {
-                throw new Error(err?.message)
+                throw new Error()
               })
         }
       }

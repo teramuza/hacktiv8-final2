@@ -29,7 +29,12 @@ const createComment = (req, res) => {
 
 const getComment = (req, res) => {
     try { 
-       Comment.findAll()
+       Comment.findAll({
+        include: {
+            model: User,
+            attributes: ['username']
+        }
+       })
             .then((data) => {
                 return responseUtil.successResponse(res, null, data)
             })
