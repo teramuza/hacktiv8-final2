@@ -3,22 +3,24 @@ const {ValidationError} = require('sequelize');
 
 const router = express.Router();
 const responseUtil = require('../helpers/response');
-const { Photo } = require('../models');
 
-const createPoto = (req, res) => {
+const { Photo, User, Comment } = require('../models');
+
+
+const createPhoto = (req, res) => {
     try {
-        const {title,caption,poster_image_url} = req.body;
+        const {title, caption, poster_image_url} = req.body;
         const {id} = req.user;
-        Photo.create({title,caption,poster_image_url,user_id:id})
+        Photo.create({title, caption, poster_image_url, user_id: id})
             .then((data) => {
                 responseUtil.successResponse(
                     res,
                     `Hi your Photo added`,
-                    {photo: {id: data.id, title, caption, user_id: id, updatedAt: data.updatedAt, createdAt: data.createdAt}}
+                    {photo: {id: data.id, poster_image_url, title, caption, userId: id}}
                 );
             }).catch(err => {
                 if (err instanceof ValidationError)
-                    return responseUtil.validationErrorResponse(res, err.errors[0].message)
+                    return responseUtil.validationErrorResponse(res, err.errors[0].message);
                 else
                     return responseUtil.badRequestResponse(res, err);
             })
@@ -27,10 +29,24 @@ const createPoto = (req, res) => {
     }
 }
 
-const getPoto = (req, res) => {
-    try { 
-       Photo.findAll(
-    )
+const getPhoto = (req, res) => {
+    try {
+       Photo.findAll({
+           include: [
+               {
+                   model: User,
+                   attributes: ['id', 'username', 'profile_image_url']
+               },
+               {
+                   model: Comment,
+                   attributes: ['comment'],
+                   include: {
+                       model: User,
+                       attributes: ['username']
+                   }
+               }
+               ]
+       })
             .then((data) => {
                 return responseUtil.successResponse(res, null, data)
             })
@@ -81,8 +97,8 @@ const deletePoto = (req, res) => {
     }
 }
 
-router.post('/', createPoto);
-router.get('/', getPoto)
+router.post('/', createPhoto);
+router.get('/', getPhoto)
 router.put('/:photoId', updatePoto);
 router.delete('/:photoId', deletePoto);
 
