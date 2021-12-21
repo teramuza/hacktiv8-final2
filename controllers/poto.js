@@ -3,7 +3,7 @@ const {ValidationError} = require('sequelize');
 
 const router = express.Router();
 const responseUtil = require('../helpers/response');
-const { Photo } = require('../models');
+const { Photo, User, Comment } = require('../models');
 
 const createPhoto = (req, res) => {
     try {
@@ -27,10 +27,24 @@ const createPhoto = (req, res) => {
     }
 }
 
-const getPoto = (req, res) => {
+const getPhoto = (req, res) => {
     try {
-       Photo.findAll(
-    )
+       Photo.findAll({
+           include: [
+               {
+                   model: User,
+                   attributes: ['id', 'username', 'profile_image_url']
+               },
+               {
+                   model: Comment,
+                   attributes: ['comment'],
+                   include: {
+                       model: User,
+                       attributes: ['username']
+                   }
+               }
+               ]
+       })
             .then((data) => {
                 return responseUtil.successResponse(res, null, data)
             })
@@ -82,7 +96,7 @@ const deletePoto = (req, res) => {
 }
 
 router.post('/', createPhoto);
-router.get('/', getPoto)
+router.get('/', getPhoto)
 router.put('/:photoId', updatePoto);
 router.delete('/:photoId', deletePoto);
 

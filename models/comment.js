@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Comment',
   });
 
+  Comment.associate = (model) => {
+    Comment.belongsTo(model.User, {foreignKey: 'user_id', foreignKeyConstraint: true});
+    Comment.belongsTo(model.Comment, {foreignKey: 'photo_id', foreignKeyConstraint: true});
+  }
 
   return Comment;
 };
