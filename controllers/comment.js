@@ -7,14 +7,14 @@ const { Comment } = require('../models');
 
 const createComment = (req, res) => {
     try {
-        const {photo_id,comment} = req.body;
+        const {PhotoId ,comment} = req.body;
         const {id} = req.user;
-        Comment.create({photo_id,comment,user_id:id})
+        Comment.create({photo_id: PhotoId ,comment, user_id:id})
             .then((data) => {
                 responseUtil.successResponse(
                     res,
                     `Hi your Comment added`,
-                    {comment: {id: data.id, photo_id, comment, user_id: id, updatedAt: data.updatedAt, createdAt: data.createdAt}}
+                    {comment: {id: data.id, PhotoId, comment, user_id: id, updatedAt: data.updatedAt, createdAt: data.createdAt}}
                 );
             }).catch(err => {
                 if (err instanceof ValidationError)
