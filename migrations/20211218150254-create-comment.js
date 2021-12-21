@@ -14,7 +14,9 @@ module.exports = {
       },
       photo_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'Photos', key: 'id'}
+        references: { model: 'Photos', key: 'id'},
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
       },
       comment: {
         type: Sequelize.TEXT
