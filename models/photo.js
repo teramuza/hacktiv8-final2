@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, ForeignKeyConstraintError
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Photo extends Model {
@@ -52,5 +52,8 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Photo',
   });
 
+  Photo.associate = models => {
+    Photo.belongsTo(models.User, {foreignKey : 'user_id', ForeignKeyConstraint: true})
+  }
   return Photo;
 };

@@ -3,7 +3,7 @@ const {ValidationError} = require('sequelize');
 
 const router = express.Router();
 const responseUtil = require('../helpers/response');
-const { Photo, User ,Comment} = require('../models');
+const { Photo } = require('../models');
 
 const createPoto = (req, res) => {
     try {

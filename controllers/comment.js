@@ -3,7 +3,7 @@ const {ValidationError} = require('sequelize');
 
 const router = express.Router();
 const responseUtil = require('../helpers/response');
-const { Comment, User } = require('../models');
+const { Comment } = require('../models');
 
 const createComment = (req, res) => {
     try {
@@ -46,7 +46,7 @@ const updateComment = (req, res) => {
         const {comment} = req.body;
         const bodyData = {comment};
         const id = parseInt(req.params.commentId);
-        Photo.update(bodyData, {where: {id}})
+        Comment.update(bodyData, {where: {id}})
             .then((data) => {
                 if (data[0] === 0){
                     return responseUtil.badRequestResponse(res, {message: 'data not found'});
@@ -65,7 +65,7 @@ const updateComment = (req, res) => {
 const deleteComment = (req, res) => {
     try {
         const id = parseInt(req.params.commentId);
-        Photo.destroy({where: {id}})
+        Comment.destroy({where: {id}})
             .then(result => {
                 if (result === 0) {
                     return responseUtil.badRequestResponse(res, {message: 'Comment not found'});
