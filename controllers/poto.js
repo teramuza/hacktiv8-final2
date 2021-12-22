@@ -15,17 +15,18 @@ const createPhoto = (req, res) => {
             .then((data) => {
                 responseUtil.successResponse(
                     res,
-                    `Hi your Photo added`,
-                    {photo: {id: data.id, poster_image_url, title, caption, userId: id}}
+                    null,
+                    {id: data.id, poster_image_url, title, caption, userId: id},
+                    201,
                 );
             }).catch(err => {
                 if (err instanceof ValidationError)
-                    return responseUtil.validationErrorResponse(res, err.errors[0].message);
+                    return responseUtil.validationErrorResponse(res, err.errors[0]);
                 else
                     return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
@@ -48,34 +49,35 @@ const getPhoto = (req, res) => {
                ]
        })
             .then((data) => {
-                return responseUtil.successResponse(res, null, data)
+                return responseUtil.successResponse(res, null, {photos: data})
             })
             .catch(err => {
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
-const updatePoto = (req, res) => {
+const updatePhoto = (req, res) => {
     try {
         const {title,caption,poster_image_url} = req.body;
         const bodyData = {title,caption,poster_image_url};
         const id = parseInt(req.params.photoId);
-        Photo.update(bodyData, {where: {id}})
+        Photo.update(bodyData, {where: {id}, returning: true})
             .then((data) => {
                 if (data[0] === 0){
                     return responseUtil.badRequestResponse(res, {message: 'data not found'});
                 }
-
-                return responseUtil.successResponse(res, 'update data successfully', bodyData);
+                return responseUtil.successResponse(res, null, {photo: data[1][0]});
             })
             .catch(err => {
+                if (err instanceof ValidationError)
+                    return responseUtil.validationErrorResponse(res, err.errors[0]);
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
@@ -85,21 +87,21 @@ const deletePoto = (req, res) => {
         Photo.destroy({where: {id}})
             .then(result => {
                 if (result === 0) {
-                    return responseUtil.badRequestResponse(res, {message: 'poto not found'});
+                    return responseUtil.badRequestResponse(res, {message: 'photo not found'});
                 }
-                return responseUtil.successResponse(res, 'Your poto successfully deleted')
+                return responseUtil.successResponse(res, 'Your photo has been successfully deleted')
             })
             .catch(err => {
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
 router.post('/', createPhoto);
 router.get('/', getPhoto)
-router.put('/:photoId', updatePoto);
+router.put('/:photoId', updatePhoto);
 router.delete('/:photoId', deletePoto);
 
 module.exports = router;

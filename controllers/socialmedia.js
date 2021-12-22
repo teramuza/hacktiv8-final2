@@ -13,24 +13,24 @@ const createSocialMedia = (req, res) => {
             .then((data) => {
                 responseUtil.successResponse(
                     res,
-                    `Hi ${name}, your social media added`,
-                    {social_media: {id: data.id, name, social_media_url, userId: id, updatedAt: data.updatedAt, createdAt: data.createdAt}}
+                    null,
+                    {social_media: {id: data.id, name, social_media_url, userId: id, updatedAt: data.updatedAt, createdAt: data.createdAt}},
+                    201
                 );
             }).catch(err => {
                 if (err instanceof ValidationError)
-                    return responseUtil.validationErrorResponse(res, err.errors[0].message)
+                    return responseUtil.validationErrorResponse(res, err.errors[0])
                 else
                     return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
 const getSocialMedia = (req, res) => {
     try {
         const {id} = req.user;
-
         SocialMedia.findAll({
             where: {user_id: id},
             include: {
@@ -40,13 +40,13 @@ const getSocialMedia = (req, res) => {
             }
         })
             .then((data) => {
-                return responseUtil.successResponse(res, null, data)
+                return responseUtil.successResponse(res, null, {social_medias: data})
             })
             .catch(err => {
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
@@ -56,19 +56,19 @@ const updateSocialMedia = (req, res) => {
         const bodyData = {name, social_media_url};
         const id = parseInt(req.params.socialMediaId);
         const userId = req.user.id;
-        SocialMedia.update(bodyData, {where: {id, user_id: userId}})
+        SocialMedia.update(bodyData, {where: {id, user_id: userId}, returning: true})
             .then((data) => {
                 if (data[0] === 0){
                     return responseUtil.badRequestResponse(res, {message: 'data not found'});
                 }
 
-                return responseUtil.successResponse(res, 'update data successfully', bodyData);
+                return responseUtil.successResponse(res, null, {social_media: data[1][0]});
             })
             .catch(err => {
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
@@ -86,7 +86,7 @@ const deleteSocialMedia = (req, res) => {
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
