@@ -35,7 +35,7 @@ const register = async (req, res) => {
                 }
             });
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
@@ -66,7 +66,7 @@ const login = (req, res) => {
             return responseUtil.badRequestResponse(res, {message: 'email & password required'})
         }
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
@@ -83,11 +83,19 @@ const updateUser = (req, res) => {
         }
         const userId = parseInt(req.params.userId);
         if (req.user.id === userId) {
-            User.update(bodyData, {where: {id: userId}})
-                .then(() => {
-                    return responseUtil.successResponse(res, null, bodyData);
+            User.update(bodyData, {where: {id: userId}, returning: true})
+                .then((data) => {
+                    if (data[0] === 0){
+                        return responseUtil.badRequestResponse(res, {message: 'data not found'});
+                    }
+                    if (data[1][0])
+                        data[1][0]['password'] = undefined;
+                    return responseUtil.successResponse(res, null, {user: data[1][0]});
                 })
                 .catch(err => {
+                    if (err instanceof ValidationError) {
+                        return responseUtil.validationErrorResponse(res, err.errors[0]);
+                    }
                     return responseUtil.badRequestResponse(res, err);
                 })
         } else {
