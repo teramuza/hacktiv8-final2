@@ -64,7 +64,7 @@ To run this project, you will need to add the following environment variables to
 ## API Reference
 
 - You can see our collection (postman) [here](https://www.getpostman.com/collections/fc0a83578f768c157d9a)
-- You can see our documentation (postman) [here](https://lively-escape-157930.postman.co/workspace/Team-Workspace~63929433-680d-4f0d-887a-548e074ce188/documentation/14129982-6b61a2da-0497-4b32-9fec-36f6e68db800)
+- You can see our documentation (postman) [here](https://documenter.getpostman.com/view/14129982/UVRDEjqd)
 
 ## Deployment
 
