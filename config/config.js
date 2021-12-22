@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 let config = {
-  "use_env_variable": "DATABASE_URL",
   "username": process.env.DB_USERNAME,
   "password": process.env.DB_PASSWORD,
   "database": process.env.DB_DATABASE,
@@ -10,6 +9,7 @@ let config = {
 }
 
 if (process.env.DEV_MODE === 'false') {
+  config["use_env_variable"] = "DATABASE_URL";
   config["logging"] = false;
   config["dialectOptions"] = {
     ssl: {
