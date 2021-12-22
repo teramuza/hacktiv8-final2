@@ -3,7 +3,7 @@ const {ValidationError} = require('sequelize');
 
 const router = express.Router();
 const responseUtil = require('../helpers/response');
-const { Comment } = require('../models');
+const { Comment, User } = require('../models');
 
 const createComment = (req, res) => {
     try {
@@ -13,22 +13,23 @@ const createComment = (req, res) => {
             .then((data) => {
                 responseUtil.successResponse(
                     res,
-                    `Hi your Comment added`,
-                    {comment: {id: data.id, PhotoId, comment, user_id: id, updatedAt: data.updatedAt, createdAt: data.createdAt}}
+                    null,
+                    {comment: {id: data.id, PhotoId, comment, user_id: id, updatedAt: data.updatedAt, createdAt: data.createdAt}},
+                    201
                 );
             }).catch(err => {
                 if (err instanceof ValidationError)
-                    return responseUtil.validationErrorResponse(res, err.errors[0].message)
+                    return responseUtil.validationErrorResponse(res, err.errors[0])
                 else
                     return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
 const getComment = (req, res) => {
-    try { 
+    try {
        Comment.findAll({
         include: {
             model: User,
@@ -36,13 +37,13 @@ const getComment = (req, res) => {
         }
        })
             .then((data) => {
-                return responseUtil.successResponse(res, null, data)
+                return responseUtil.successResponse(res, null, {comments: data})
             })
             .catch(err => {
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
@@ -51,19 +52,20 @@ const updateComment = (req, res) => {
         const {comment} = req.body;
         const bodyData = {comment};
         const id = parseInt(req.params.commentId);
-        Comment.update(bodyData, {where: {id}})
+        Comment.update(bodyData, {where: {id}, returning: true})
             .then((data) => {
                 if (data[0] === 0){
                     return responseUtil.badRequestResponse(res, {message: 'data not found'});
                 }
-
-                return responseUtil.successResponse(res, 'update data successfully', bodyData);
+                return responseUtil.successResponse(res, null, {comment: data[1][0]});
             })
             .catch(err => {
+                if (err instanceof ValidationError)
+                    return responseUtil.validationErrorResponse(res, err.errors[0]);
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 
@@ -75,13 +77,13 @@ const deleteComment = (req, res) => {
                 if (result === 0) {
                     return responseUtil.badRequestResponse(res, {message: 'Comment not found'});
                 }
-                return responseUtil.successResponse(res, 'Your Comment successfully deleted')
+                return responseUtil.successResponse(res, 'Your comment has been successfully deleted')
             })
             .catch(err => {
                 return responseUtil.badRequestResponse(res, err);
             })
     } catch (e) {
-        return responseUtil.serverErrorResponse(res, e.message);
+        return responseUtil.serverErrorResponse(res, {message: e.message});
     }
 }
 

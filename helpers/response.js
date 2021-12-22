@@ -1,5 +1,5 @@
 const logging = require("../helpers/logging");
-const successResponse = (res, message, data, status = 200) => {
+const successResponse = (res, message, data = {}, status = 200) => {
     if (message) {
         data.message = message;
     }
