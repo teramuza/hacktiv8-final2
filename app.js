@@ -14,6 +14,8 @@ app.use((req, res, next) => {
 app.use('/api/v1', router);
 // NOTE: if you want to add a new router, please add it in the 'routes' directory, and list the router in 'routes/index.js'
 
-app.listen(process.env.APP_PORT, () => {
-    console.log(`listening on port ${process.env.APP_PORT}`);
+const port = process.env.PORT || process.env.APP_PORT
+
+app.listen(port, () => {
+    console.log(`listening on port ${port}`);
 });
