@@ -77,7 +77,7 @@
 								"exec": [
 									"const result = pm.response.json()",
 									"console.log(result);",
-									"pm.collectionVariables.set('token', result.data.token)"
+									"pm.collectionVariables.set('token', result.token)"
 								],
 								"type": "text/javascript"
 							}
@@ -426,7 +426,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "5"
+									"value": "1"
 								}
 							]
 						}
@@ -736,11 +736,11 @@
 		},
 		{
 			"key": "host",
-			"value": "http://localhost"
+			"value": "https://hacktiv8-final2.herokuapp.com"
 		},
 		{
 			"key": "port",
-			"value": ":4000"
+			"value": ""
 		},
 		{
 			"value": ""
